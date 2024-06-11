@@ -14,5 +14,6 @@ func main() {
 	lexer_.Tokens()
 	parser_ := parser.NewParser(lexer_.Targets)
 	dom := parser_.Parser()
-	fmt.Println(dom)
+	button := dom.GetElementById("test")
+	fmt.Println(button)
 }

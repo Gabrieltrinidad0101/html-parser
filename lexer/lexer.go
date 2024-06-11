@@ -1,6 +1,9 @@
 package lexer
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type lexer struct {
 	Text        string
@@ -9,15 +12,11 @@ type lexer struct {
 	Targets     []*Target
 }
 
-type Property struct {
-	Name  string
-	Value string
-}
-
 type Target struct {
-	Type_      string
-	IsOpen     bool
-	Properties []Property
+	Type_       string
+	IsOpen      bool
+	Properties  map[string]string
+	TextContent string
 }
 
 func NewLexer(path string) (*lexer, error) {
@@ -53,17 +52,20 @@ func (l *lexer) advancer() {
 
 func (l *lexer) target() Target {
 	target := ""
-	properties := []Property{}
+	text := ""
+	properties := map[string]string{}
 	isOpen := true
 	if l.currentChar == "<" {
 		l.advancer()
 
-		if l.currentChar == "/" {
-			isOpen = false
-		}
+		isOpen := l.currentChar == "/"
 
 		for l.currentChar != " " && l.currentChar != ">" {
 			target += l.currentChar
+			l.advancer()
+		}
+
+		for l.currentChar == " " {
 			l.advancer()
 		}
 
@@ -74,28 +76,33 @@ func (l *lexer) target() Target {
 		for isOpen && l.currentChar != ">" {
 			propertyName := ""
 			propertyValue := ""
+
 			for l.currentChar != "=" {
 				propertyName += l.currentChar
 				l.advancer()
 			}
 
-			for l.currentChar != " " {
+			l.advancer()
+
+			for l.currentChar != " " && l.currentChar != ">" {
 				propertyValue += l.currentChar
 				l.advancer()
 			}
 			if propertyName != "" {
-				properties = append(properties, Property{
-					Name:  propertyName,
-					Value: propertyValue,
-				})
+				properties[propertyName] = strings.Trim(propertyValue, "\"")
 			}
-			l.advancer()
 		}
 		l.advancer()
+		for isOpen && l.currentChar != "<" {
+			text += l.currentChar
+			l.advancer()
+		}
 	}
+
 	return Target{
-		Type_:      target,
-		IsOpen:     isOpen,
-		Properties: properties,
+		Type_:       target,
+		IsOpen:      isOpen,
+		Properties:  properties,
+		TextContent: text,
 	}
 }

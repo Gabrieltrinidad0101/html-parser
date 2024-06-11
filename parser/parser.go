@@ -2,12 +2,6 @@ package parser
 
 import "html-parser/lexer"
 
-type Element struct {
-	lexer.Target
-	Children []*Element
-	Parent   *Element
-}
-
 type parser struct {
 	targets []*lexer.Target
 }
