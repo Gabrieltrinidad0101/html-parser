@@ -58,7 +58,18 @@ func (l *lexer) target() Target {
 	if l.currentChar == "<" {
 		l.advancer()
 
-		isOpen := l.currentChar == "/"
+		isOpen := l.currentChar != "/"
+
+		if !isOpen {
+			for l.currentChar != ">" {
+				l.advancer()
+			}
+			l.advancer()
+			return Target{
+				Type_:  "",
+				IsOpen: false,
+			}
+		}
 
 		for l.currentChar != " " && l.currentChar != ">" {
 			target += l.currentChar
@@ -69,11 +80,7 @@ func (l *lexer) target() Target {
 			l.advancer()
 		}
 
-		for !isOpen && l.currentChar != ">" {
-			l.advancer()
-		}
-
-		for isOpen && l.currentChar != ">" {
+		for l.currentChar != ">" {
 			propertyName := ""
 			propertyValue := ""
 
@@ -93,7 +100,7 @@ func (l *lexer) target() Target {
 			}
 		}
 		l.advancer()
-		for isOpen && l.currentChar != "<" {
+		for l.currentChar != "<" {
 			text += l.currentChar
 			l.advancer()
 		}
