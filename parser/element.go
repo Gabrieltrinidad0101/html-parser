@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"html-parser/lexer"
+	"github.com/Gabrieltrinidad0101/html-parser/lexer"
 )
 
 type Element struct {

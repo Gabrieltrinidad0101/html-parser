@@ -1,6 +1,6 @@
 package parser
 
-import "html-parser/lexer"
+import "github.com/Gabrieltrinidad0101/html-parser/lexer"
 
 type parser struct {
 	targets []*lexer.Target

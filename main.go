@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"html-parser/lexer"
-	"html-parser/parser"
+
+	"github.com/Gabrieltrinidad0101/html-parser/lexer"
+	"github.com/Gabrieltrinidad0101/html-parser/parser"
 )
 
 func main() {
