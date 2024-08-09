@@ -65,10 +65,7 @@ func (l *lexer) target() Target {
 				l.advancer()
 			}
 			l.advancer()
-			return Target{
-				Type_:  "",
-				IsOpen: false,
-			}
+			return Target{}
 		}
 
 		for l.currentChar != " " && l.currentChar != ">" {
@@ -80,11 +77,15 @@ func (l *lexer) target() Target {
 			l.advancer()
 		}
 
+	properties:
 		for l.currentChar != ">" {
 			propertyName := ""
 			propertyValue := ""
 
 			for l.currentChar != "=" {
+				if l.currentChar == ">" {
+					break properties
+				}
 				propertyName += l.currentChar
 				l.advancer()
 			}

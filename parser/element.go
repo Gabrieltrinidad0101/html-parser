@@ -17,7 +17,10 @@ func forEach(element *Element, cb func(*Element) bool) *Element {
 		if stop {
 			return child
 		}
-		return forEach(child, cb)
+		elemt := forEach(child, cb)
+		if elemt != nil {
+			return elemt
+		}
 	}
 	return nil
 }

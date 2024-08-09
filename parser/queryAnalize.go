@@ -42,7 +42,7 @@ func (q Query) Analyze(queryText string) *[]QueryData {
 			query.Search = subQuery
 		}
 
-		query.SearchOnlySubChildren = i < len(querySplit)-1 && string(querySplit[i+1]) == ">"
+		query.SearchOnlySubChildren = (i < len(querySplit)-1 && string(querySplit[i+1]) == ">")
 		querys = append(querys, query)
 	}
 
