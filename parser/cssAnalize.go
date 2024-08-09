@@ -6,9 +6,8 @@ type CssAnalize struct {
 	currentChar string
 }
 
-func NewCssAnalize(css string) *CssAnalize {
+func NewCssAnalize() *CssAnalize {
 	return &CssAnalize{
-		css: css,
 		idx: -1,
 	}
 }
@@ -34,7 +33,8 @@ func (ac *CssAnalize) skipSpace() bool {
 	return isSpace
 }
 
-func (ac *CssAnalize) Process() map[string]map[string]string {
+func (ac *CssAnalize) Process(css string) map[string]map[string]string {
+	ac.css = css
 	var queries = map[string]map[string]string{}
 
 main:

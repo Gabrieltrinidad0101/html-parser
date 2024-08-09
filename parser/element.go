@@ -38,9 +38,11 @@ func (e Element) GetElementById(id string) *Element {
 	})
 }
 
-func (e Element) QuerySelector(textQuery string) *Element {
+func (e Element) querySelectorBase(textQuery string, getAll bool) []*Element {
 	querys := e.query.Analyze(textQuery)
 	currentElement := &e
+	elements := []*Element{}
+
 mainLoop:
 	for i := 0; i < len(*querys); i++ {
 		query := (*querys)[i]
@@ -71,11 +73,23 @@ mainLoop:
 					continue mainLoop
 				}
 			}
-			return nil
 		}
-		if currentElement == nil {
-			return nil
+		if currentElement != nil {
+			elements = append(elements, currentElement)
+		}
+		if !getAll {
+			return elements
 		}
 	}
-	return currentElement
+	return elements
+}
+
+func (e Element) QuerySelector(textQuery string) *Element {
+	elements := e.querySelectorBase(textQuery, false)
+	return elements[0]
+}
+
+func (e Element) QuerySelectorAll(textQuery string) []*Element {
+	elements := e.querySelectorBase(textQuery, false)
+	return elements
 }
