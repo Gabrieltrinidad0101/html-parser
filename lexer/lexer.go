@@ -97,7 +97,7 @@ func (l *lexer) target() Target {
 				l.advancer()
 			}
 			if propertyName != "" {
-				properties[propertyName] = strings.Trim(propertyValue, "\"")
+				properties[strings.Trim(propertyName, " ")] = strings.Trim(propertyValue, "\"")
 			}
 		}
 		l.advancer()

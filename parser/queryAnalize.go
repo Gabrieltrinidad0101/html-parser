@@ -6,6 +6,7 @@ type QueryData struct {
 	TypeSearch            string
 	SearchOnlySubChildren bool
 	Search                string
+	IsFound               bool
 }
 
 type Query struct {
@@ -18,8 +19,23 @@ func NewQuery(query string) *Query {
 	}
 }
 
-func (q Query) Analyze(queryText string) *[]QueryData {
-	querys := []QueryData{}
+func forEach(element *Element, cb func(*Element) bool) *Element {
+	for _, child := range element.Children {
+		stop := cb(child)
+		if stop {
+			return child
+		}
+		elemt := forEach(child, cb)
+		if elemt != nil {
+			return elemt
+		}
+	}
+	return nil
+}
+
+
+func (q Query) Analyze(queryText string) []*QueryData {
+	querys := []*QueryData{}
 	querySplit := strings.Split(queryText, " ")
 	for i := 0; i < len(querySplit); i++ {
 		subQuery := querySplit[i]
@@ -35,7 +51,6 @@ func (q Query) Analyze(queryText string) *[]QueryData {
 		} else {
 			query.TypeSearch = "element"
 		}
-
 		if query.TypeSearch != "element" {
 			query.Search = subQuery[1:]
 		} else {
@@ -43,8 +58,8 @@ func (q Query) Analyze(queryText string) *[]QueryData {
 		}
 
 		query.SearchOnlySubChildren = (i < len(querySplit)-1 && string(querySplit[i+1]) == ">")
-		querys = append(querys, query)
+		querys = append(querys, &query)
 	}
 
-	return &querys
+	return querys
 }

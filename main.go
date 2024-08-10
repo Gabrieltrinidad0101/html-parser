@@ -8,12 +8,15 @@ import (
 )
 
 func main() {
-	lexer_, err := lexer.NewLexer("./index.html")
+	lexer_, err := lexer.NewLexer("./index2.html")
 	if err != nil {
 		panic(err)
 	}
 	lexer_.Tokens()
 	parser_ := parser.NewParser(lexer_.Targets)
 	dom := parser_.Parser()
-	fmt.Println(dom.QuerySelector("h1").Properties)
+	h1s := dom.QuerySelectorAll("h1")
+	for _, h1 := range *h1s {
+		fmt.Println(h1)
+	}
 }

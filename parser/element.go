@@ -11,20 +11,6 @@ type Element struct {
 	query    Query
 }
 
-func forEach(element *Element, cb func(*Element) bool) *Element {
-	for _, child := range element.Children {
-		stop := cb(child)
-		if stop {
-			return child
-		}
-		elemt := forEach(child, cb)
-		if elemt != nil {
-			return elemt
-		}
-	}
-	return nil
-}
-
 func (e Element) GetElementById(id string) *Element {
 	value := e.Properties["id"]
 
@@ -38,58 +24,59 @@ func (e Element) GetElementById(id string) *Element {
 	})
 }
 
-func (e Element) querySelectorBase(textQuery string, getAll bool) []*Element {
-	querys := e.query.Analyze(textQuery)
-	currentElement := &e
-	elements := []*Element{}
+func (e *Element) QuerySelector(textQuery string) *Element {
+	queries := e.query.Analyze(textQuery)
+	elements := make([]*Element, 0, len(queries))
+	elements1 := e.querySelector(e, queries, 0, false, &elements)
+	return (*elements1)[0]
+}
 
-mainLoop:
-	for i := 0; i < len(*querys); i++ {
-		query := (*querys)[i]
+func (e *Element) QuerySelectorAll(textQuery string) *[]*Element {
+	queries := e.query.Analyze(textQuery)
+	elements := make([]*Element, 0, len(queries))
+	return e.querySelector(e, queries, 0, true, &elements)
+}
 
-		currentElement = forEach(currentElement, func(element *Element) bool {
-			if query.TypeSearch != "element" {
-				value := element.Properties[query.TypeSearch]
-				if value == query.Search {
-					return true
-				}
-			}
-			return element.Type_ == query.Search
-		})
+func (e *Element) SetQueryFalses(queries []*QueryData) {
+	for _, query := range queries {
+		query.IsFound = false
+	}
+}
 
-		if query.SearchOnlySubChildren {
-			i++
-			query := (*querys)[i]
-			for _, child := range currentElement.Children {
-				if query.TypeSearch != "element" {
-					value := child.Properties[query.TypeSearch]
-					if value == query.Search {
-						currentElement = child
-						continue mainLoop
-					}
-				}
-				if child.Type_ == query.Search {
-					currentElement = child
-					continue mainLoop
-				}
+func (e *Element) querySelector(element *Element, queries []*QueryData, index int, getAll bool, elements *[]*Element) *[]*Element {
+	for _, child := range element.Children {
+		query := (queries)[index]
+
+		if query.TypeSearch == "id" {
+			query.IsFound = child.Properties["id"] == query.Search
+		}
+
+		if query.TypeSearch == "class" {
+			query.IsFound = child.Properties["class"] == query.Search
+		}
+
+		if query.TypeSearch == "element" {
+			query.IsFound = child.Type_ == query.Search
+		}
+
+		if query.IsFound {
+			index++
+		}
+
+		if (queries)[len(queries)-1].IsFound {
+			*elements = append(*elements, child)
+			e.SetQueryFalses(queries)
+			if !getAll {
+				return elements
 			}
 		}
-		if currentElement != nil {
-			elements = append(elements, currentElement)
-		}
-		if !getAll {
-			return elements
+
+		elemt := e.querySelector(child, queries, index, getAll, elements)
+		query.IsFound = elemt != nil
+
+		if !getAll && len(*elemt) == 1 {
+			return elemt
 		}
 	}
-	return elements
-}
-
-func (e Element) QuerySelector(textQuery string) *Element {
-	elements := e.querySelectorBase(textQuery, false)
-	return elements[0]
-}
-
-func (e Element) QuerySelectorAll(textQuery string) []*Element {
-	elements := e.querySelectorBase(textQuery, false)
 	return elements
 }

@@ -54,7 +54,7 @@ func (p parser) Parser() *Element {
 		queries := p.cssAnalize.Process(css)
 		for query, properties := range queries {
 			elements := dom.QuerySelectorAll(query)
-			for _, element := range elements {
+			for _, element := range *elements {
 				maps.Copy(element.Properties, properties)
 			}
 		}

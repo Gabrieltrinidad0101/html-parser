@@ -67,7 +67,7 @@ main:
 			ac.advance()
 			ac.skipSpace()
 			var value string
-			for ac.currentChar != ";" {
+			for ac.currentChar != ";" && ac.currentChar != "\n" {
 				value += ac.currentChar
 				ac.advance()
 				ac.skipSpace()
