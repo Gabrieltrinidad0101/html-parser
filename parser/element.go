@@ -60,7 +60,9 @@ func (e *Element) querySelector(element *Element, queries []*QueryData, index in
 		}
 
 		if query.IsFound {
-			index++
+			if index < len(queries)-1 {
+				index++
+			}
 		}
 
 		if (queries)[len(queries)-1].IsFound {

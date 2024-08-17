@@ -15,8 +15,8 @@ func main() {
 	lexer_.Tokens()
 	parser_ := parser.NewParser(lexer_.Targets)
 	dom := parser_.Parser()
-	h1s := dom.QuerySelectorAll("h1")
+	h1s := dom.QuerySelectorAll("div")
 	for _, h1 := range *h1s {
-		fmt.Println(h1)
+		fmt.Println(h1.Properties)
 	}
 }
