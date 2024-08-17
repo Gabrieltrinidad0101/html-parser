@@ -52,9 +52,7 @@ func (l *lexer) advancer() {
 
 func (l *lexer) target() Target {
 	target := ""
-	text := ""
 	properties := map[string]string{}
-	isOpen := true
 	if l.currentChar == "<" {
 		l.advancer()
 
@@ -101,16 +99,22 @@ func (l *lexer) target() Target {
 			}
 		}
 		l.advancer()
-		for l.currentChar != "<" {
-			text += l.currentChar
-			l.advancer()
+		return Target{
+			Type_:      target,
+			IsOpen:     isOpen,
+			Properties: properties,
 		}
 	}
 
+	text := ""
+	for l.currentChar != "<" {
+		text += l.currentChar
+		l.advancer()
+	}
+
 	return Target{
-		Type_:       target,
-		IsOpen:      isOpen,
-		Properties:  properties,
-		TextContent: text,
+		Type_:       "text",
+		IsOpen:      true,
+		TextContent: strings.TrimSpace(text),
 	}
 }

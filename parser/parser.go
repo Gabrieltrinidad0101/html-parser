@@ -47,7 +47,9 @@ func (p parser) Parser() *Element {
 
 		newElement.Parent = currentState
 		currentState.Children = append(currentState.Children, newElement)
-		currentState = newElement
+		if target.Type_ != "text" {
+			currentState = newElement
+		}
 	}
 
 	for _, css := range csses {
