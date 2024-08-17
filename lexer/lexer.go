@@ -99,10 +99,16 @@ func (l *lexer) target() Target {
 			}
 		}
 		l.advancer()
+		text := ""
+		for target == "style" && l.currentChar != "<" {
+			text += l.currentChar
+			l.advancer()
+		}
 		return Target{
-			Type_:      target,
-			IsOpen:     isOpen,
-			Properties: properties,
+			Type_:       target,
+			IsOpen:      isOpen,
+			Properties:  properties,
+			TextContent: text,
 		}
 	}
 

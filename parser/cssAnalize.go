@@ -70,7 +70,6 @@ main:
 			for ac.currentChar != ";" && ac.currentChar != "\n" {
 				value += ac.currentChar
 				ac.advance()
-				ac.skipSpace()
 			}
 			ac.advance()
 			ac.skipSpace()

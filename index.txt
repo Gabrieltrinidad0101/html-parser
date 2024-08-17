@@ -1,8 +1,0 @@
-onlyOneChild
-allChildren
-noSpace same element
-with nothing element type
-with [] search into property
-#id > 
-.class input
-input input input .

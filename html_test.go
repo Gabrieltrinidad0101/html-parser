@@ -31,7 +31,7 @@ func TestMain(t *testing.T) {
 	}
 
 	p := dom.QuerySelector("p")
-	assert.Equal("Hello world", p.TextContent)
+	assert.Equal("Hello world", p.Children[0].TextContent)
 	assert.Equal(map[string]string{}, p.Properties)
 	assert.Equal("p", p.Type_)
 
@@ -42,8 +42,9 @@ func TestMain(t *testing.T) {
 
 func validateH1Test111(test_111 *parser.Element, t *testing.T) {
 	assert := assert.New(t)
-	assert.Equal("h1", test_111.TextContent)
+	assert.Equal("h1", test_111.Children[0].TextContent)
 	assert.Equal("test_111", test_111.Properties["id"])
 	assert.Equal("test_111", test_111.Properties["class"])
+	assert.Equal("red", test_111.Properties["color"])
 	assert.Equal("h1", test_111.Type_)
 }
