@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"time"
+
 	"github.com/Gabrieltrinidad0101/html-parser/lexer"
 )
 
@@ -9,6 +11,12 @@ type Element struct {
 	Children []*Element
 	Parent   *Element
 	query    Query
+}
+
+func NewElement(target lexer.Target) *Element {
+	return &Element{
+		Target: target,
+	}
 }
 
 func (e Element) GetElementById(id string) *Element {

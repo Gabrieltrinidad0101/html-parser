@@ -20,18 +20,16 @@ func NewParser(targets []*lexer.Target) *parser {
 
 func (p parser) Parser() *Element {
 	csses := []string{}
-	dom := &Element{
-		Target: lexer.Target{
-			Type_:  "root",
-			IsOpen: true,
-		},
-		Parent: nil,
-	}
+	dom := NewElement(lexer.Target{
+		Type_:  "root",
+		IsOpen: true,
+	})
 	currentState := dom
 	for i, target := range p.targets {
 
 		if target.Type_ == "style" {
 			csses = append(csses, target.TextContent)
+			continue
 		}
 
 		if currentState.Parent != nil && !p.targets[i].IsOpen {
@@ -41,9 +39,7 @@ func (p parser) Parser() *Element {
 		if !target.IsOpen {
 			continue
 		}
-		newElement := &Element{
-			Target: *target,
-		}
+		newElement := NewElement(*target)
 
 		newElement.Parent = currentState
 		currentState.Children = append(currentState.Children, newElement)
